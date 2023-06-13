@@ -1,9 +1,19 @@
-# Bitcoin Rates ETL Streaming Pipeline
-The requirement for this project was to extract near-real time data of Bitcoin rates across major currencies `(USD/GBP/EUR)` from the CoinDesk Bitcoin Price Index API, do some transformations on the JSON payload and load structured data to an embedded (SQLite) database. 
+[![Python application](https://github.com/richardogoma/bitcoin-rate-etl/actions/workflows/python-app.yml/badge.svg)](https://github.com/richardogoma/bitcoin-rate-etl/actions/workflows/python-app.yml)
 
-The data at the API endpoint refreshes every 60 seconds, so this ETL program would run as a background process, extracting JSON data, transforming and loading structured data into the embedded database every minute.
+# Bitcoin Rates ETL Pipeline
+The project can be classified as a real-time streaming ETL (Extract, Transform, Load) pipeline. It is **part of [a Flask project](https://github.com/richardogoma/bitcoin-rate-tracker) focused on the development of a web application or microservice for tracking and visualizing Bitcoin rates across major currencies.**
 
-This project is **part of a Flask project focused on the development of a web application or microservice for tracking and visualizing Bitcoin rates across major currencies.**
+The pipeline involves the following steps:
+
+1. **Extract:** The ETL program extracts data from the CoinDesk Bitcoin Price Index API. It retrieves near-real-time data of Bitcoin rates across major currencies (USD/GBP/EUR). The data is obtained in the form of JSON payload.
+
+2. **Transform:** The JSON payload is transformed to convert it into a structured format that is suitable for storage and analysis. This step involves parsing the JSON data, extracting relevant information such as timestamp, currency rates, and the chart name, and applying data transformations or manipulations.
+
+3. **Load:** The transformed and structured data is loaded into an embedded (SQLite) database. This involves inserting the data into appropriate table within the database, ensuring data integrity, and handling any necessary updates or modifications to the existing data.
+
+The ETL program is designed to run as a background process and perform these steps every minute to ensure the database stays up to date with the near-real-time Bitcoin rate data. The "every minute" condition was factored into the project design because the data at the API endpoint refreshes every 60 seconds. 
+
+Overall, this pipeline enables the continuous extraction, transformation, and loading of data from the API into the SQLite database, providing the necessary data foundation for the Flask web application or microservice to track and visualize Bitcoin rates across major currencies.
 
 ## The ETL project structure
 ```bash
