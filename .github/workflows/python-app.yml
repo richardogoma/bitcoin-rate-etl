@@ -7,8 +7,8 @@ on:
   push:
     branches: 
       - '**'  # matches every branch
-  pull_request:
-    branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
 
 permissions:
   contents: read
@@ -35,4 +35,5 @@ jobs:
         make lint
     - name: Test with pytest
       run: |
+        mkdir -p data/processed
         make test
