@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+# Create python virtual environment
+python3 -m venv .venv
+
+# Activate the virtual environment
+source .venv/bin/activate
+
+# Make processed data directory
+mkdir -p data/processed
+
 # Run "make all" command to set up dependencies and other tasks
 make all
 

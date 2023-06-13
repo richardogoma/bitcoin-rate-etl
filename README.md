@@ -46,7 +46,7 @@ This project is **part of a Flask project focused on the development of a web ap
 
 ## Setup ETL Pipeline
 ```bash
-chmod +x setup_etl.sh && ./setup_etl.sh
+source setup_etl.sh
 ```
 
 ## Disclaimer
