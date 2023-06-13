@@ -1,10 +1,10 @@
 install:
 	pip install --upgrade pip && \
-		pip install -r requirements.txt && \
+		pip install -r requirements.txt
 
 test:
-	python -m pytest -vv --cov=etl.extract.retriever --cov=etl.transform.parser \
-		tests/test_data_retrieval.py tests/test_data_parsing.py
+	python -m pytest -vv --cov=etl.extract.retriever --cov=etl.transform.parser --cov=etl.load.loader \
+		tests/test_data_retrieval.py tests/test_data_parsing.py tests/test_data_loading.py
 
 format:
 	black *.py **/*.py ***/**/*.py 
@@ -12,7 +12,4 @@ format:
 lint:
 	pylint *.py **/*.py ***/**/*.py 
 
-run: 
-	
-
-all: install format lint test run
+all: install format lint test

@@ -4,13 +4,14 @@ import pytest
 from datetime import datetime
 from decimal import Decimal
 
+
 @pytest.fixture
 def test_file_path():
     return "./data/raw/sample.json"
 
 
 def read_json_file(file_path):
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         json_data = file.read()
         deserialized_data = json.loads(json_data)
     return deserialized_data
