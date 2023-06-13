@@ -1,3 +1,4 @@
+[![Python application](https://github.com/richardogoma/bitcoin-rate-etl/actions/workflows/python-app.yml/badge.svg)](https://github.com/richardogoma/bitcoin-rate-etl/actions/workflows/python-app.yml)
 # Bitcoin Rates ETL Streaming Pipeline
 The requirement for this project was to extract near-real time data of Bitcoin rates across major currencies `(USD/GBP/EUR)` from the CoinDesk Bitcoin Price Index API, do some transformations on the JSON payload and load structured data to an embedded (SQLite) database. 
 
