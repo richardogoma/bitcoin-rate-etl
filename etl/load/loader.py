@@ -44,6 +44,11 @@ def load_data(database_uri: str, data: list) -> bool:
             cursor.execute(insert_query, formatted_data)
             connection.commit()
 
+            # Delete records beyond 48 hours from the SQLite table
+            delete_query = f"DELETE FROM {schema['table']} WHERE datetime(timestamp) < datetime('now', '-48 hours')"
+            cursor.execute(delete_query)
+            connection.commit()
+
             return cursor.lastrowid > 0
 
     except sqlite3.Error as error_msg:
