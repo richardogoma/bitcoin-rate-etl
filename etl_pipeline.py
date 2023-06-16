@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+ETL Pipeline for retrieving, transforming, and loading data.
+"""
+
 from etl import start_etl
 from config import Config
 

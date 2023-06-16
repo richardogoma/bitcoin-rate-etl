@@ -1,3 +1,4 @@
+""" Loading logic """
 import sqlite3
 import sys
 from decimal import Decimal
@@ -5,6 +6,16 @@ from datetime import datetime
 
 
 def load_data(database_uri: str, data: list) -> bool:
+    """
+    Loads Bitcoin rate data into an SQLite database.
+
+    Args:
+        database_uri (str): The URI of the SQLite database.
+        data (list): The list containing the data to load.
+
+    Returns:
+        bool: True if the data was successfully loaded, False otherwise.
+    """
     schema = {
         "database_name": "bitcoin_rate_tracker",
         "schema_name": "dbo",
@@ -49,7 +60,7 @@ def load_data(database_uri: str, data: list) -> bool:
             INSERT INTO {schema['table']} ({', '.join(field for field in schema['fields'] if field != 'unique_number')})
             VALUES ({', '.join(['?'] * (len(schema['fields']) - 1))})
             ON CONFLICT (timestamp) DO UPDATE SET
-                {', '.join(f"{field} = excluded.{field}" for field in schema['fields'] if field != 'unique_number' and field != 'timestamp')}
+                {', '.join(f"{field} = excluded.{field}" for field in schema['fields'] if field not in ('unique_number', 'timestamp'))}
             """
             cursor.execute(insert_query, formatted_data)
             connection.commit()
@@ -57,8 +68,11 @@ def load_data(database_uri: str, data: list) -> bool:
             # The maximum timestamp is the timestamp of the last inserted record
             max_timestamp = formatted_data[0]
 
-            # Delete records beyond 48 hours from the maximum timestamp in the SQLite table
-            delete_query = f"DELETE FROM {schema['table']} WHERE datetime(timestamp) < datetime('{max_timestamp}', '-48 hours')"
+            # Delete records older than 48 hours from the maximum timestamp in the SQLite table
+            delete_query = f"""
+                DELETE FROM {schema['table']}
+                WHERE datetime(timestamp) < datetime('{max_timestamp}', '-48 hours')
+            """
             cursor.execute(delete_query)
             connection.commit()
 

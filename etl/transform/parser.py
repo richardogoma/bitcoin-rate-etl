@@ -1,8 +1,18 @@
+""" Transformation logic """
 from datetime import datetime
 from decimal import Decimal
 
 
 def parse_dict(data: dict) -> list:
+    """
+    Parses a dictionary containing Bitcoin exchange rate data.
+
+    Args:
+        data (dict): The dictionary containing the data to parse.
+
+    Returns:
+        list: A list containing the parsed data.
+    """
     timestamp_str = data["time"]["updatedISO"]
     timestamp = datetime.fromisoformat(timestamp_str)
 
