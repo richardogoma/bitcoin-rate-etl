@@ -29,11 +29,12 @@ def start_etl(config):
             response = retrieve_rates(uri=api_url)
             parsed_data = parse_dict(response)
 
-            if not load_data(database_uri=sqlite_db_path, data=parsed_data):
-                raise IOError("Error loading data to SQLite db")
-
-            info = f"{parsed_data[1]} rates as at {parsed_data[0].isoformat()}"
-            print(f"{datetime.now()}: INFO: Inserted {info} into the database ...")
+            if load_data(database_uri=sqlite_db_path, data=parsed_data):
+                info = f"{parsed_data[1]} rates as at {parsed_data[0].isoformat()}"
+                print(f"{datetime.now()}: INFO: Inserted {info} into the database ...")
+            else:
+                info = f"{parsed_data[1]} rates as at {parsed_data[0].isoformat()}"
+                print(f"{datetime.now()}: INFO: Updated {info} in the database ...")
 
             # Wait for one minute before fetching the next update
             time.sleep(60)
