@@ -36,11 +36,21 @@ def load_data(database_uri: str, data: list) -> bool:
             cursor = connection.cursor()
 
             # Create table schema
-            create_table_query = f"CREATE TABLE IF NOT EXISTS {schema['table']} ({', '.join(f'{column} {specification}' for column, specification in schema['fields'].items())});"
+            create_table_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema['table']} (
+                {', '.join(f'{column} {specification}' for column, specification in schema['fields'].items())},
+                UNIQUE (timestamp)
+            );
+            """
             cursor.execute(create_table_query)
 
             # Insert data into SQLite table
-            insert_query = f"INSERT INTO {schema['table']} ({', '.join(field for field in schema['fields'] if field != 'unique_number')})\nVALUES ({', '.join(['?'] * (len(schema['fields']) - 1))})"
+            insert_query = f"""
+            INSERT INTO {schema['table']} ({', '.join(field for field in schema['fields'] if field != 'unique_number')})
+            VALUES ({', '.join(['?'] * (len(schema['fields']) - 1))})
+            ON CONFLICT (timestamp) DO UPDATE SET
+                {', '.join(f"{field} = excluded.{field}" for field in schema['fields'] if field != 'unique_number' and field != 'timestamp')}
+            """
             cursor.execute(insert_query, formatted_data)
             connection.commit()
 
