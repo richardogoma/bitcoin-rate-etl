@@ -44,8 +44,11 @@ def load_data(database_uri: str, data: list) -> bool:
             cursor.execute(insert_query, formatted_data)
             connection.commit()
 
-            # Delete records beyond 48 hours from the SQLite table
-            delete_query = f"DELETE FROM {schema['table']} WHERE datetime(timestamp) < datetime('now', '-48 hours')"
+            # The maximum timestamp is the timestamp of the last inserted record
+            max_timestamp = formatted_data[0]
+
+            # Delete records beyond 48 hours from the maximum timestamp in the SQLite table
+            delete_query = f"DELETE FROM {schema['table']} WHERE datetime(timestamp) < datetime('{max_timestamp}', '-48 hours')"
             cursor.execute(delete_query)
             connection.commit()
 
