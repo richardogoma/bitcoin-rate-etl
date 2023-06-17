@@ -4,7 +4,7 @@ ETL module for data extraction, transformation, and loading.
 
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import sqlite3
 import requests
 from etl.extract.retriever import retrieve_rates
@@ -36,8 +36,13 @@ def start_etl(config):
                 info = f"{parsed_data[1]} rates as at {parsed_data[0].isoformat()}"
                 print(f"{datetime.now()}: INFO: Updated {info} in the database ...")
 
-            # Wait for one minute before fetching the next update
-            time.sleep(60)
+            # Calculate the time until the next minute
+            now = datetime.now()
+            next_minute = now.replace(second=0, microsecond=0) + timedelta(minutes=1)
+
+            # Wait until the next minute
+            remaining_time = (next_minute - now).total_seconds()
+            time.sleep(remaining_time)
 
     except (requests.exceptions.RequestException, sqlite3.Error) as error_msg:
         print("Error: " + str(error_msg))
