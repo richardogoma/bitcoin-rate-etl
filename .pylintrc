@@ -2,4 +2,4 @@
 disable = W0621
 
 [FORMAT]
-max-line-length = 100
+max-line-length = 150

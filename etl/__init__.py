@@ -26,15 +26,24 @@ def start_etl(config):
         api_url = config.get_config_value("API_URI")
 
         while True:
+            start_time = time.time()
             response = retrieve_rates(uri=api_url)
             parsed_data = parse_dict(response)
 
             if load_data(database_uri=sqlite_db_path, data=parsed_data):
+                end_time = time.time()
+                process_duration = end_time - start_time
                 info = f"{parsed_data[1]} rates as at {parsed_data[0].isoformat()}"
-                print(f"{datetime.now()}: INFO: Inserted {info} into the database ...")
+                print(
+                    f"{datetime.now()}: INFO: Inserted {info} into the database. ETL process duration: {process_duration} secs"
+                )
             else:
+                end_time = time.time()
+                process_duration = end_time - start_time
                 info = f"{parsed_data[1]} rates as at {parsed_data[0].isoformat()}"
-                print(f"{datetime.now()}: INFO: Updated {info} in the database ...")
+                print(
+                    f"{datetime.now()}: INFO: Updated {info} in the database. ETL process duration: {process_duration} secs"
+                )
 
             # Calculate the time until the next minute
             now = datetime.now()
