@@ -36,11 +36,8 @@ for ((i = 0; i < delay_seconds; i++)); do
 done
 
 # ------------------------------------------------------------------------
-# Grab the PID of the ETL pipeline process
-pid=$(pgrep -f etl_pipeline.py)
-
 # Check if the ETL pipeline process is already running
-if [ -n "$pid" ]; then
+if pgrep -f etl_pipeline.py >/dev/null; then
     echo -e "ETL pipeline is already running. Skipping the startup command. \nYou can kill the process by executing: kill $pid"
 else
     # Start the ETL pipeline in the background and append stdout to output.log
