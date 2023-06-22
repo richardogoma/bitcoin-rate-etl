@@ -4,6 +4,7 @@ set -e
 # Make processed data directory
 mkdir -p data/processed
 
+# -----------------------------------------------------------------------
 # Calculate the delay until the start of the next minute
 current_seconds=$(date +%s)
 next_minute_seconds=$(( (current_seconds / 60 + 1) * 60 ))
@@ -34,24 +35,33 @@ for ((i = 0; i < delay_seconds; i++)); do
   sleep 1
 done
 
-# Start the ETL pipeline in the background and append stdout to output.log
-nohup nice -n 10 python3 -u etl_pipeline.py >> output.log 2>&1 &
-
-# Echo message before the sleep command
-echo "Waiting for a few seconds to allow the process to start..."
-
-# Sleep for a few seconds to allow the process to start
-sleep 5
-
+# ------------------------------------------------------------------------
 # Grab the PID of the ETL pipeline process
 pid=$(pgrep -f etl_pipeline.py)
 
-# Check if the process is running
+# Check if the ETL pipeline process is already running
 if [ -n "$pid" ]; then
-    echo -e "ETL pipeline is running. PID: $pid \nYou can kill the process by executing: kill $pid"
-
-    # Monitor resource allocation using ps
-    ps -p "$pid" -o user,pid,ppid,ni,time,state,start,%cpu,%mem
+    echo -e "ETL pipeline is already running. Skipping the startup command. \nYou can kill the process by executing: kill $pid"
 else
-    echo "ETL pipeline failed to start."
+    # Start the ETL pipeline in the background and append stdout to output.log
+    nohup nice -n 10 python3 -u etl_pipeline.py >> output.log 2>&1 &
+
+    # Echo message before the sleep command
+    echo "Waiting for a few seconds to allow the process to start..."
+
+    # Sleep for a few seconds to allow the process to start
+    sleep 5
+
+    # Grab the PID of the ETL pipeline process
+    pid=$(pgrep -f etl_pipeline.py)
+
+    # Check if the process is running
+    if [ -n "$pid" ]; then
+        echo -e "ETL pipeline is running. PID: $pid \nYou can kill the process by executing: kill $pid"
+
+        # Monitor resource allocation using ps
+        ps -p "$pid" -o user,pid,ppid,ni,time,state,start,%cpu,%mem
+    else
+        echo "ETL pipeline failed to start."
+    fi
 fi
